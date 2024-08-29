@@ -96,7 +96,9 @@ def add_channel_data_to_df(df, channel_name_column):
         if os.path.exists(filename):
             with open(filename, 'r') as f:
                 json_data = json.load(f)
+
                 if json_data and json_data.get("Channel ID", None) is not None:
+                    print("I used my cached system")
                     return json_data
 
                 #return json.load(f)

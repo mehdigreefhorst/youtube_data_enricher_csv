@@ -11,3 +11,9 @@ python-dotenv
 numpy
 pandas
 setuptools
+jupyter
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn

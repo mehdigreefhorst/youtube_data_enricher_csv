@@ -5,7 +5,17 @@ import time
 from youtube_transcript_api import YouTubeTranscriptApi
 import re
 
+def check_video_link_is_id(video_link):
+    """
+    Checks if a YouTube link is a video ID.
 
+    :param video_link: (str) The YouTube video URL
+    :return: (bool) True if the link is a video ID, False otherwise
+    """
+    if 'youtube.com' in video_link or 'youtu' in video_link:
+        return False
+    else:
+        return True
 def get_video_id_from_youtube_link(youtube_link):
     """
     Extracts the video ID from a YouTube link.
@@ -13,13 +23,15 @@ def get_video_id_from_youtube_link(youtube_link):
     :param youtube_link: (str) The YouTube video URL
     :return: (str) The extracted video ID
     """
+    if check_video_link_is_id(youtube_link):
+        return youtube_link
     video_id = re.search(r'(?<=v=)[^&]+', youtube_link)
 
-    if '?' in youtube_link:
+    if '?' in youtube_link and not video_id:
         location_split = youtube_link.find('?')
         video_id = youtube_link[:location_split]
         #return video_id
-    if "youtu." in youtube_link:
+    if "youtu." in youtube_link and not video_id:
         url = youtube_link.split('youtu.')[1]
         index_start_id = url.find('/') + 1
         video_id_with_extra_random_characters = url[index_start_id:]
@@ -33,7 +45,10 @@ def get_video_id_from_youtube_link(youtube_link):
                 video_id += char
         #return video_id
     if video_id:
-        return video_id
+        if 're.Match' in str(type(video_id)):
+            return video_id.group(0)
+        else:
+            return video_id
     else:
         return None
 
@@ -162,6 +177,7 @@ def add_new_columns_to_df(df, video_link_columns, channel_name_column, starting_
             video_link = row[column]
             if pd.notna(video_link):
                 video_id = get_video_id_from_youtube_link(video_link)
+                print("video_id = ", video_id)
                 video_data = get_cached_data('video', video_id)
 
                 if video_data is None:
@@ -178,3 +194,4 @@ def add_new_columns_to_df(df, video_link_columns, channel_name_column, starting_
 
 if __name__ == "__main__":
     print(get_video_id_from_youtube_link("https://youtu.be/mNfqAHZM-x4"))
+    print(check_video_link_is_id("Xc5n49aEhwc"))
